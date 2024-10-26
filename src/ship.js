@@ -1,12 +1,16 @@
 class Ship {
-    constructor(length, timesHit=0) {
+    constructor(length) {
         this.length = length;
-        this.timesHit = timesHit;
-        this.position = null;
+        this.timesHit = 0;
+        this.row = null;
+        this.col = null;
+        this.orientation = null;
     }
 
-    setPosition(row, col) {
-        this.position = [row, col];
+    setPosition(row, col, orientation) {
+        this.row = row;
+        this.col = col;;
+        this.orientation = orientation;
     }
 
     hit() {

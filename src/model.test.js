@@ -21,8 +21,31 @@ test('gameboard', () => {
     const gb = new Gameboard();
     expect(gb.allShipsSunk()).toBeFalsy();
 
-    gb.placeShip(new Ship(4), 'r', 0, 0, 'h');
-    gb.placeShip(new Ship(3), 'r', 2, 2, 'v');
+    const ship1 = gb.ships[0];
+    const ship2 = gb.ships[1];
+    gb.placeShip(ship1, 0, 0, 'h');
+    gb.placeShip(ship2, 2, 2, 'v');
 
-    console.log(gb.board);
+    // test sinking a ship and missing a space
+    gb.receiveAttack(4, 2);
+    gb.receiveAttack(3, 2);
+    expect(ship2.isSunk()).toBeFalsy();
+    
+    gb.receiveAttack(3, 3);
+    gb.receiveAttack(2, 2);
+    gb.receiveAttack(5, 2)
+    expect(ship2.isSunk()).toBeTruthy();
+
+    // test sinking all ships
+    gb.receiveAttack(0, 0);
+    gb.receiveAttack(0, 1);
+
+    expect(ship1.isSunk()).toBeFalsy();
+    gb.receiveAttack(0, 2);
+    gb.receiveAttack(0, 3);
+    
+    expect(ship1.isSunk()).toBeFalsy();
+    gb.receiveAttack(0, 4);
+    expect(ship1.isSunk()).toBeTruthy();
+    // expect(gb.allShipsSunk()).toBeTruthy(); THIS DOESN'T WORK YET BC NOT ALL SHIPS ARE PLACED ON BOARD
 })

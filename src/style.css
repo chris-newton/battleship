@@ -1,0 +1,69 @@
+:root {
+    --board-grid-width: 400px;
+    --board-grid-height: 400px;
+    --board-grid-background: rgb(26, 120, 197);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+}
+
+.board-grid {
+    border: 1px solid var(--board-grid-background);
+    background-color: var(--board-grid-background);
+
+    height: var(--board-grid-height); 
+    width: var(--board-grid-width);
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 1px;
+}
+
+.cell {
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell-ship {
+    background-color: var(--board-grid-background);
+}
+
+.cell-hit {
+    background-color: rgb(255, 116, 116);
+}
+
+.cell-miss {
+    background-color: rgb(238, 238, 238);
+}
+
+.cell-sunk {
+    background-color: rgb(255, 48, 48);
+    font-size: 2rem;
+    font-weight: 100;
+}
+
+#player-container,
+#computer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+body::before {
+    background: radial-gradient(rgb(0, 255, 229), blue);
+}
