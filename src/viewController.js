@@ -38,19 +38,29 @@ function drawBoard(player) {
     }
 }
 
+
 function handleAttack(player, row, col) {
     const didHit = player.gameboard.receiveAttack(row, col);
     drawBoard(player);
 
-    if (!didHit) {
-        gameState.turn = (gameState.turn === 'r') ? 'c' : 'r'; 
-        computerTurn();
-        return;
-    }   
+    const gameStep = document.querySelector("#game-step");
 
+    if (!didHit) {
+        gameState.turn = (gameState.turn === 'r') ? 'c' : 'r';
+        gameStep.textContent = "opponent's turn."; // Indicate it's the opponent's turn
+
+        computerTurn(() => gameStep.textContent = "your turn.");
+
+        return;
+    } else {
+        gameStep.textContent = "hit! Go again."; 
+    }
+
+    // CASE: player wins 
     if (player.gameboard.allShipsSunk()) {
-        end();
+        end('r');
     }
 }
+
 
 export { drawBoard };

@@ -2,11 +2,13 @@
     --board-grid-width: 400px;
     --board-grid-height: 400px;
     --board-grid-background: rgb(26, 120, 197);
+    --end-modal-color2: rgba(0, 0, 0, 0.4);
 }
 
 * {
     margin: 0;
     padding: 0;
+    border: 0;
     box-sizing: border-box;
 }
 
@@ -16,6 +18,15 @@ body {
     justify-content: center;
     align-items: center;
     gap: 80px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+
+:focus {
+    outline: none;
 }
 
 .board-grid {
@@ -55,8 +66,7 @@ body {
     font-weight: 100;
 }
 
-#player-container,
-#computer-container {
+.board-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -64,6 +74,64 @@ body {
     gap: 15px;
 }
 
-body::before {
-    background: radial-gradient(rgb(0, 255, 229), blue);
+#player-container,
+#computer-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    position: relative;
+}
+
+#end-modal {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.4));
+    height: 250px;
+    width: 400px;
+    border-radius: 25px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    button {
+        background-color: transparent;
+        border: 1px solid rgb(66, 66, 66);
+        position: absolute;
+        bottom: 16px;
+        border-radius: 16px;
+        padding: 6px;
+        font-weight: 600;
+    }
+
+    button:active {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+}
+
+#winner-text {
+    color: white;
+    font-size: 3rem;
+}
+
+#end-modal:modal {
+    display: flex;
+}
+
+#end-modal:focus {
+    outline: none;
+}
+
+::backdrop {
+    background-color: rgba(255, 255, 255, 0.792);
+}
+
+#game-step {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
