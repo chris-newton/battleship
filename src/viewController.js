@@ -3,7 +3,7 @@ import { computerTurn, end } from './index.js';
 
 function drawBoard(player) {
     const grid = document.querySelector(`#${player.team}-board-grid`);
-    grid.replaceChildren(); // wipe
+    grid.replaceChildren(); // wipe grids
 
     for (let row = 0; row < boardRows; row++) {
         for (let col = 0; col < boardCols; col++) {
@@ -38,29 +38,37 @@ function drawBoard(player) {
     }
 }
 
-
 function handleAttack(player, row, col) {
     const didHit = player.gameboard.receiveAttack(row, col);
     drawBoard(player);
 
     const gameStep = document.querySelector("#game-step");
-
+    const computerBoardModal = document.querySelector("#computer-board-modal");
+    
     if (!didHit) {
         gameState.turn = (gameState.turn === 'r') ? 'c' : 'r';
         gameStep.textContent = "opponent's turn."; // Indicate it's the opponent's turn
 
-        computerTurn(() => gameStep.textContent = "your turn.");
+        // hide the play button in the modal
+        const playButton = document.querySelector("#play-button");
+        playButton.style.display = "none";
+        computerBoardModal.show();
+
+        computerTurn(() => {
+            computerBoardModal.close();
+            playButton.style.display = "block";
+            gameStep.textContent = "your turn."
+        })
 
         return;
-    } else {
-        gameStep.textContent = "hit! Go again."; 
     }
+    
+    gameStep.textContent = "hit! Go again."; 
 
     // CASE: player wins 
     if (player.gameboard.allShipsSunk()) {
         end('r');
     }
 }
-
 
 export { drawBoard };

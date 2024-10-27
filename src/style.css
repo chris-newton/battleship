@@ -1,6 +1,6 @@
 :root {
-    --board-grid-width: 400px;
-    --board-grid-height: 400px;
+    --board-grid-width: 410px;
+    --board-grid-height: 410px;
     --board-grid-background: rgb(26, 120, 197);
     --end-modal-color2: rgba(0, 0, 0, 0.4);
 }
@@ -10,6 +10,7 @@
     padding: 0;
     border: 0;
     box-sizing: border-box;
+    font-family: "Press Start 2P", system-ui;
 }
 
 body {
@@ -61,7 +62,7 @@ button:hover {
 }
 
 .cell-sunk {
-    background-color: rgb(255, 48, 48);
+    background-color: rgb(213, 24, 24);
     font-size: 2rem;
     font-weight: 100;
 }
@@ -80,18 +81,19 @@ button:hover {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
     position: relative;
 }
 
 #end-modal {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.4));
+
+    position: absolute;
+    transform: translate(-50%, -50%); 
     height: 250px;
     width: 400px;
     border-radius: 25px;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
 
     flex-direction: column;
     justify-content: center;
@@ -110,6 +112,7 @@ button:hover {
     button:active {
         background-color: rgba(0, 0, 0, 0.4);
     }
+
 }
 
 #winner-text {
@@ -119,10 +122,15 @@ button:hover {
 
 #end-modal:modal {
     display: flex;
+    animation: slowFade 500ms;
 }
 
 #end-modal:focus {
     outline: none;
+}
+
+#end-modal * {
+    color: white;
 }
 
 ::backdrop {
@@ -143,7 +151,6 @@ button:hover {
     height: 100%;
     width: 100%;
 
-
     button {
         position: relative;
         top: 50%;
@@ -163,5 +170,21 @@ button:hover {
 
     button:active {
         background: linear-gradient(rgb(174, 221, 174), rgb(131, 168, 131))
+    }
+}
+
+@keyframes slowFade {
+    0% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0.955555);
+    }
+
+    10% {
+        transform: translate(-50%, -50%) scale(0.97);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
     }
 }

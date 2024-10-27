@@ -38,7 +38,6 @@ function end(team) {
     const winnerText = document.querySelector("#winner-text");
     winnerText.textContent = team === 'r' ? 'You won!' : 'You lost.';
     endModal.prepend(winnerText);
-
     endModal.showModal();
 }
 
