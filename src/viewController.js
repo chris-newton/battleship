@@ -47,7 +47,7 @@ function handleAttack(player, row, col) {
     
     if (!didHit) {
         gameState.turn = (gameState.turn === 'r') ? 'c' : 'r';
-        gameStep.textContent = "opponent's turn."; // Indicate it's the opponent's turn
+        gameStep.textContent = "Opponent's turn."; // Indicate it's the opponent's turn
 
         // hide the play button in the modal
         const playButton = document.querySelector("#play-button");
@@ -57,13 +57,13 @@ function handleAttack(player, row, col) {
         computerTurn(() => {
             computerBoardModal.close();
             playButton.style.display = "block";
-            gameStep.textContent = "your turn."
+            gameStep.textContent = "Your turn."
         })
 
         return;
     }
     
-    gameStep.textContent = "hit! Go again."; 
+    gameStep.textContent = "Hit! Take another shot."; 
 
     // CASE: player wins 
     if (player.gameboard.allShipsSunk()) {
