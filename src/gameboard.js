@@ -1,7 +1,7 @@
 import { Ship } from "./ship.js";
+import { boardRows, boardCols } from "./globals.js";
 
 class Gameboard {
-    // team is the char representing the player's team, either 'r' for real (the user) or 'c' for computer
     constructor() {
         this.board = [['','','','','','','','','',''],
                       ['','','','','','','','','',''],
@@ -13,52 +13,91 @@ class Gameboard {
                       ['','','','','','','','','',''],
                       ['','','','','','','','','',''],
                       ['','','','','','','','','','']];
-    
         this.ships = [5, 4, 3, 3, 2].map(x => new Ship(x));
+        this.randomizeBoard();
+        console.log(this.board);
+    }
 
-        // HARDCODED ship positions for now
-        this.ships[0].setPosition(0, 0, 'v');
-        this.ships[1].setPosition(2, 2, 'v');
-        this.ships[2].setPosition(5, 9, 'v');
-        this.ships[3].setPosition(1, 6, 'h');
-        this.ships[4].setPosition(8, 4, 'h');
-        this.ships.forEach((ship) => {
-            this.placeShip(ship, ship.row, ship.col, ship.orientation);
-        });
+    // randomly places all ships
+    randomizeBoard() {
+        this.ships.forEach(ship => {
+            let randOrientation;
+            let randRow;
+            let randCol;
+
+            do {
+                randRow = Math.floor(Math.random() * 10);
+                randCol = Math.floor(Math.random() * 10);
+                randOrientation = Math.floor(Math.random() * 2) === 0 ? 'v' : 'h';
+            } while (!this.validatePlacement(ship, randRow, randCol, randOrientation));
+            
+            this.placeShip(ship, randRow, randCol, randOrientation);
+        })
+    }
+
+    // looks through all the cells the ship would take up with this placement
+    // returns true iff the placement won't overlap or violate spacing, else false
+    validatePlacement(ship, row, col, orientation) {
+        if (orientation === 'v') {
+            for (let i = row; i < row + ship.length; i++) {
+                if (i === boardRows || this.board[i][col] !== '' || !this.checkNeighbors(i, col)) {
+                    return false;
+                }
+            }
+        } else {
+            for (let i = col; i < col + ship.length; i++) {
+                if (i === boardCols || this.board[row][i] !== '' || !this.checkNeighbors(row, i)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // returns true iff the cell at [row, col] is not adjacent to any ships
+    checkNeighbors(row, col) {
+        if (col > 0 && this.board[row][col-1] !== '') return false;                           // left
+        
+        if (col < boardCols - 1 &&  this.board[row][col+1] !== '') return false               // right
+        
+        if (row > 0 && this.board[row-1][col] !== '') return false;                           // above
+        
+        if (row < boardRows-1 && this.board[row+1][col] !== '') return false;                 // below
+        
+        if (col > 0 && row > 0 && this.board[row-1][col-1] !== '') return false;              // left-above
+        
+        if (col > 0 && row < boardRows-1 && this.board[row+1][col-1] !== '') return false     // left-below
+        
+        if (col < boardCols-1 && row > 0 && this.board[row-1][col+1] !== '') return false;    // right-above
+        
+        if (col < boardCols-1 && row < boardRows-1 && this.board[row+1][col+1] !== '') return false; // right-below
+        
+        return true;
     }
 
     placeShip(ship, row, col, orientation) {
         // remove the ship from board
-        if (orientation === 'v') {
-            for (let i = ship.row; i < ship.row + ship.length; i++) {
-                this.board[i][ship.col] = '';
-            }
-        } else if (orientation === 'h') {
-            for (let i = ship.col; i < ship.col + ship.length; i++) {
-                this.board[ship.row][i] = '';
+        if (ship.row) {
+            if (orientation === 'v') {
+                for (let i = ship.row; i < ship.row + ship.length; i++) {
+                    this.board[i][ship.col] = '';
+                }
+            } else if (orientation === 'h') {
+                for (let i = ship.col; i < ship.col + ship.length; i++) {
+                    this.board[ship.row][i] = '';
+                }
             }
         }
-
-        // check if ship will violate overlap & spacing rules
-        // if (orientation === 'v') {
-        //     for (let i = ship.row; i < ship.row + ship.length; i++) {
-        //         this.board[i][ship.col] = '';
-        //     }
-        // } else if (orientation === 'h') {
-        //     for (let i = ship.col; i < ship.col + ship.length; i++) {
-        //         this.board[ship.row][i] = '';
-        //     }
-        // }
         
         // update ship position
         ship.setPosition(row, col, orientation);
 
-        // place the ship on board 
-        if (orientation === 'v' && row + ship.length < 10) {
+        // place ship on the board 
+        if (orientation === 'v') {
             for (let i = row; i < row + ship.length; i++) {
                 this.board[i][col] = 's';
             }
-        } else if (orientation === 'h' && col + ship.length < 10) {
+        } else if (orientation === 'h') {
             for (let i = col; i < col + ship.length; i++) {
                 this.board[row][i] = 's';
             }

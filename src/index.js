@@ -42,24 +42,40 @@ function end(team) {
     endModal.showModal();
 }
 
-function restart() {
+// resetting takes the game back to ship placement
+// and allows the user to press start
+function reset() {
     player = new Player('r');
     computer = new Player('c');
     drawBoard(player);
     drawBoard(computer);
-    gameStep.textContent = "your turn.";
+
+    gameStep.textContent = "place your ships.";
     const endModal = document.querySelector("#end-modal");
     endModal.close();
+    computerBoardModal.show();
+}
+
+// starts the game with the player's turn
+function start() {
+    computerBoardModal.close();
+    gameStep.textContent = "your turn.";
 }
 
 let player = new Player('r');
 let computer = new Player('c');
 
 const gameStep = document.querySelector("#game-step");
-gameStep.textContent = "your turn.";
+gameStep.textContent = "place your ships.";
 
 const replayButton = document.querySelector("#end-modal > button");
-replayButton.addEventListener("click", restart);
+replayButton.addEventListener("click", reset);
+
+const computerBoardModal = document.querySelector("#computer-board-modal");
+computerBoardModal.show();
+
+const playButton = document.querySelector("#play-button");
+playButton.addEventListener("click", start);
 
 drawBoard(player);
 drawBoard(computer);

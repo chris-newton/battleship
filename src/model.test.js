@@ -49,3 +49,4 @@ test('gameboard', () => {
     expect(ship1.isSunk()).toBeTruthy();
     // expect(gb.allShipsSunk()).toBeTruthy(); THIS DOESN'T WORK YET BC NOT ALL SHIPS ARE PLACED ON BOARD
 })
+

@@ -130,8 +130,38 @@ button:hover {
 }
 
 #game-step {
+    font-size: 1.5rem;
     position: absolute;
     top: 10%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+#computer-board-modal {
+    background-color: rgba(255, 255, 255, 0.792);
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+
+    button {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -110%);
+
+        border-radius: 16px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        padding-left: 15px;
+        padding-right: 15px;
+
+
+        font-weight: 600;
+        background: linear-gradient(rgb(202, 255, 202), rgb(161, 207, 161))
+    }
+
+    button:active {
+        background: linear-gradient(rgb(174, 221, 174), rgb(131, 168, 131))
+    }
 }
