@@ -3,7 +3,7 @@ import { computerTurn, end } from './index.js';
 
 function drawBoard(player) {
     const grid = document.querySelector(`#${player.team}-board-grid`);
-    grid.replaceChildren(); // wipe grids
+    grid.replaceChildren(); // wipe grid
 
     for (let row = 0; row < boardRows; row++) {
         for (let col = 0; col < boardCols; col++) {
@@ -13,6 +13,13 @@ function drawBoard(player) {
 
             if (player.team === 'r' && player.gameboard.board[row][col] === 's') {
                 cell.classList.add('cell-ship');
+                if (gameState.turn === 'setup') {
+                    // make player's cells drag/droppable
+                    cell.setAttribute("draggable", "true");
+                    cell.addEventListener("dragstart", shipDragStart.bind(null, player));
+                    cell.addEventListener("dragover", shipDragOver);
+                    cell.addEventListener("drop", shipDrop.bind(null, player));
+                }
             } else if (player.gameboard.board[row][col] === 'x') {
                 cell.classList.add('cell-hit');
                 cell.textContent = '•';
@@ -23,6 +30,11 @@ function drawBoard(player) {
                 cell.classList.remove('cell-hit');
                 cell.classList.add('cell-sunk')
                 cell.textContent = '✕';
+            } else if (player.gameboard.board[row][col] === '') {
+                if (gameState.turn === 'setup' && player.team === 'r') {
+                    cell.addEventListener("dragover", shipDragOver);
+                    cell.addEventListener("drop", shipDrop.bind(null, player));
+                }
             }
 
             // make the cells of the computer's board clickable
@@ -33,8 +45,53 @@ function drawBoard(player) {
                     }
                 });
             }
+
             grid.appendChild(cell); 
         }
+    }
+}
+
+// draggable event handlers
+function shipDragStart(player, e) {
+    const fromCellId = e.target.id;
+    const row = parseInt(fromCellId.slice(-3, -2));
+    const col = parseInt(fromCellId.slice(-2, -1));
+    const ship = player.gameboard.shipAt(row, col);
+    // only send the cellId if the cell is a ship
+    if (ship !== null) {
+        e.dataTransfer.setData("text/plain", fromCellId);
+    }
+}
+
+function shipDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+}
+
+function shipDrop(player, e) {
+    e.preventDefault();
+    const fromCellId = e.dataTransfer.getData("text");
+
+    if (!fromCellId) { // if dragstart listener was on non-ship cell, do nothing
+        return;
+    }
+   
+    const fromRow = parseInt(fromCellId.slice(-3, -2));
+    const fromCol = parseInt(fromCellId.slice(-2, -1));
+    const ship = player.gameboard.shipAt(fromRow, fromCol);
+    console.log(`from row: ${fromRow} from col: ${fromCol}`);
+    
+    const toCellId = e.target.id;
+    const toRow = parseInt(toCellId.slice(-3, -2));
+    const toCol = parseInt(toCellId.slice(-2, -1));
+    console.log(`to row: ${toRow} to col: ${toCol}`);
+
+    // place the ship if valid
+    if (player.gameboard.validateMove(ship, toRow, toCol, ship.orientation)) {
+        player.gameboard.placeShip(ship, toRow, toCol, ship.orientation);
+        drawBoard(player);
+    } else {
+        console.log('invalid')
     }
 }
 

@@ -1,7 +1,7 @@
 const boardRows = 10;
 const boardCols = 10;
 let gameState = {
-    turn: 'r',
+    turn: 'setup',
 }
 
 export { boardRows, boardCols, gameState };

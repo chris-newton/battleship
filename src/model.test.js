@@ -1,5 +1,6 @@
 import { Ship } from './ship.js';
 import { Gameboard } from './gameboard.js';
+import { Player } from './player.js';
 
 test('ship', () => {
     const myShip = new Ship(5, 0);
@@ -50,7 +51,8 @@ test('gameboard', () => {
     // expect(gb.allShipsSunk()).toBeTruthy(); THIS DOESN'T WORK YET BC NOT ALL SHIPS ARE PLACED ON BOARD
 })
 
-test('end', () => {
-    
+test('gameboard.shipAt()', () => {
+    const player1 = new Player();
+    console.log(player1.gameboard.shipAt(0,0));
 })
 

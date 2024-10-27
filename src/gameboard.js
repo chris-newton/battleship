@@ -15,7 +15,6 @@ class Gameboard {
                       ['','','','','','','','','','']];
         this.ships = [5, 4, 3, 3, 2].map(x => new Ship(x));
         this.randomizeBoard();
-        console.log(this.board);
     }
 
     // randomly places all ships
@@ -35,49 +34,9 @@ class Gameboard {
         })
     }
 
-    // looks through all the cells the ship would take up with this placement
-    // returns true iff the placement won't overlap or violate spacing, else false
-    validatePlacement(ship, row, col, orientation) {
-        if (orientation === 'v') {
-            for (let i = row; i < row + ship.length; i++) {
-                if (i === boardRows || this.board[i][col] !== '' || !this.checkNeighbors(i, col)) {
-                    return false;
-                }
-            }
-        } else {
-            for (let i = col; i < col + ship.length; i++) {
-                if (i === boardCols || this.board[row][i] !== '' || !this.checkNeighbors(row, i)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    // returns true iff the cell at [row, col] is not adjacent to any ships
-    checkNeighbors(row, col) {
-        if (col > 0 && this.board[row][col-1] !== '') return false;                           // left
-        
-        if (col < boardCols - 1 &&  this.board[row][col+1] !== '') return false               // right
-        
-        if (row > 0 && this.board[row-1][col] !== '') return false;                           // above
-        
-        if (row < boardRows-1 && this.board[row+1][col] !== '') return false;                 // below
-        
-        if (col > 0 && row > 0 && this.board[row-1][col-1] !== '') return false;              // left-above
-        
-        if (col > 0 && row < boardRows-1 && this.board[row+1][col-1] !== '') return false     // left-below
-        
-        if (col < boardCols-1 && row > 0 && this.board[row-1][col+1] !== '') return false;    // right-above
-        
-        if (col < boardCols-1 && row < boardRows-1 && this.board[row+1][col+1] !== '') return false; // right-below
-        
-        return true;
-    }
-
     placeShip(ship, row, col, orientation) {
         // remove the ship from board
-        if (ship.row) {
+        if (ship.row !== null) {
             if (orientation === 'v') {
                 for (let i = ship.row; i < ship.row + ship.length; i++) {
                     this.board[i][ship.col] = '';
@@ -102,6 +61,88 @@ class Gameboard {
                 this.board[row][i] = 's';
             }
         }
+    }
+
+    // looks through all the cells the ship would take up with this placement
+    // returns true iff the placement won't overlap or violate spacing, else false
+    validatePlacement(ship, row, col, orientation) {
+        if (orientation === 'v') {
+            for (let i = row; i < row + ship.length; i++) {
+                if (i === boardRows || this.board[i][col] !== '' || !this.checkNeighbors(i, col)) {
+                    return false;
+                }
+            }
+        } else {
+            for (let i = col; i < col + ship.length; i++) {
+                if (i === boardCols || this.board[row][i] !== '' || !this.checkNeighbors(row, i)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // for validating that a drag-and-drop ship move during game setup is valid
+    // same logic as validatePlacement, but ignores this ship's current position 
+    validateMove(ship, row, col, orientation) {
+        if (orientation === 'v') {
+            for (let i = row; i < row + ship.length; i++) {
+                if (i === boardRows || !this.checkDifferentNeighbors(i, col, ship)) {
+                    return false;
+                }
+            }
+        } else {
+            for (let i = col; i < col + ship.length; i++) {
+                if (i === boardCols || !this.checkDifferentNeighbors(row, i, ship)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // returns true iff the cell at [row, col] is not adjacent to any ships
+    // purposefully overlooks cells containing the same ship
+    checkDifferentNeighbors(row, col, sameShip) {
+        if (this.shipAt(row, col) != sameShip && this.board[row][col] !== '') return false;
+        if (col > 0 && this.shipAt(row, col-1) != sameShip && this.board[row][col-1] !== '') return false;                           // left
+        
+        if (col < boardCols - 1 && this.shipAt(row, col+1) != sameShip && this.board[row][col+1] !== '') return false               // right
+        
+        if (row > 0 && this.shipAt(row-1, col) != sameShip && this.board[row-1][col] !== '') return false;                           // above
+        
+        if (row < boardRows-1 && this.shipAt(row+1, col) != sameShip && this.board[row+1][col] !== '') return false;                 // below
+        
+        if (col > 0 && row > 0 && this.shipAt(row-1, col-1) != sameShip && this.board[row-1][col-1] !== '') return false;              // left-above
+        
+        if (col > 0 && row < boardRows-1 && this.shipAt(row+1, col-1) != sameShip && this.board[row+1][col-1] !== '') return false     // left-below
+        
+        if (col < boardCols-1 && row > 0 && this.shipAt(row-1, col+1) != sameShip && this.board[row-1][col+1] !== '') return false;    // right-above
+        
+        if (col < boardCols-1 && row < boardRows-1 && this.shipAt(row+1, col+1) != sameShip && this.board[row+1][col+1] !== '') return false; // right-below
+        
+        return true;
+    }
+    
+    // returns true iff the cell at [row, col] is not adjacent to any ships
+    checkNeighbors(row, col) {
+        if (col > 0 && this.board[row][col-1] !== '') return false;                           // left
+        
+        if (col < boardCols - 1 &&  this.board[row][col+1] !== '') return false               // right
+        
+        if (row > 0 && this.board[row-1][col] !== '') return false;                           // above
+        
+        if (row < boardRows-1 && this.board[row+1][col] !== '') return false;                 // below
+        
+        if (col > 0 && row > 0 && this.board[row-1][col-1] !== '') return false;              // left-above
+        
+        if (col > 0 && row < boardRows-1 && this.board[row+1][col-1] !== '') return false     // left-below
+        
+        if (col < boardCols-1 && row > 0 && this.board[row-1][col+1] !== '') return false;    // right-above
+        
+        if (col < boardCols-1 && row < boardRows-1 && this.board[row+1][col+1] !== '') return false; // right-below
+        
+        return true;
     }
 
     receiveAttack(row, col) {

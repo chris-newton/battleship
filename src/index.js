@@ -44,7 +44,7 @@ function end(team) {
 
 // resetting takes the game back to ship placement
 // and allows the user to press start
-function reset() {
+function setup() {
     player = new Player('r');
     computer = new Player('c');
     drawBoard(player);
@@ -59,7 +59,11 @@ function reset() {
 // starts the game with the player's turn
 function start() {
     computerBoardModal.close();
+    gameState.turn = 'r';   
     gameStep.textContent = "Your turn.";
+
+    drawBoard(player);
+    drawBoard(computer);
 }
 
 let player = new Player('r');
@@ -69,7 +73,7 @@ const gameStep = document.querySelector("#game-step");
 gameStep.textContent = "Place your ships.";
 
 const replayButton = document.querySelector("#end-modal > button");
-replayButton.addEventListener("click", reset);
+replayButton.addEventListener("click", setup);
 
 const computerBoardModal = document.querySelector("#computer-board-modal");
 computerBoardModal.show();
