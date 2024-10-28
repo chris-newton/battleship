@@ -79,19 +79,15 @@ function shipDrop(player, e) {
     const fromRow = parseInt(fromCellId.slice(-3, -2));
     const fromCol = parseInt(fromCellId.slice(-2, -1));
     const ship = player.gameboard.shipAt(fromRow, fromCol);
-    console.log(`from row: ${fromRow} from col: ${fromCol}`);
     
     const toCellId = e.target.id;
     const toRow = parseInt(toCellId.slice(-3, -2));
     const toCol = parseInt(toCellId.slice(-2, -1));
-    console.log(`to row: ${toRow} to col: ${toCol}`);
 
     // place the ship if valid
     if (player.gameboard.validateMove(ship, toRow, toCol, ship.orientation)) {
         player.gameboard.placeShip(ship, toRow, toCol, ship.orientation);
         drawBoard(player);
-    } else {
-        console.log('invalid')
     }
 }
 
@@ -99,12 +95,13 @@ function handleAttack(player, row, col) {
     const didHit = player.gameboard.receiveAttack(row, col);
     drawBoard(player);
 
-    const gameStep = document.querySelector("#game-step");
+    const hitAnimationBg = document.querySelector("#hit-animation-bg");
+    const statusText = document.querySelector("#status-text");
     const computerBoardModal = document.querySelector("#computer-board-modal");
     
     if (!didHit) {
         gameState.turn = (gameState.turn === 'r') ? 'c' : 'r';
-        gameStep.textContent = "Opponent's turn."; // Indicate it's the opponent's turn
+        statusText.textContent = "Opponent's turn."; // Indicate it's the opponent's turn
 
         // hide the play button in the modal
         const playButton = document.querySelector("#play-button");
@@ -114,14 +111,18 @@ function handleAttack(player, row, col) {
         computerTurn(() => {
             computerBoardModal.close();
             playButton.style.display = "block";
-            gameStep.textContent = "Your turn."
+            statusText.textContent = "Your turn."
         })
 
         return;
     }
     
-    gameStep.textContent = "Hit! Take another shot."; 
-
+    statusText.textContent = "Hit! Take another shot."; 
+    hitAnimationBg.classList.toggle("hit");
+    setTimeout(() => {
+        hitAnimationBg.classList.toggle("hit")
+    }, 1500);
+    
     // CASE: player wins 
     if (player.gameboard.allShipsSunk()) {
         end('r');

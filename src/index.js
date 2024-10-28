@@ -37,7 +37,7 @@ function end(team) {
     const endModal = document.querySelector("#end-modal");
     const winnerText = document.querySelector("#winner-text");
     winnerText.textContent = team === 'r' ? 'You won!' : 'You lost.';
-    gameStep.textContent = 'Game Over.';
+    statusText.textContent = 'Game Over.';
     endModal.prepend(winnerText);
     endModal.showModal();
 }
@@ -45,12 +45,13 @@ function end(team) {
 // resetting takes the game back to ship placement
 // and allows the user to press start
 function setup() {
+    gameState.turn = 'setup';
     player = new Player('r');
     computer = new Player('c');
     drawBoard(player);
     drawBoard(computer);
 
-    gameStep.textContent = "Place your ships.";
+    statusText.textContent = "Place your ships.";
     const endModal = document.querySelector("#end-modal");
     endModal.close();
     computerBoardModal.show();
@@ -60,7 +61,7 @@ function setup() {
 function start() {
     computerBoardModal.close();
     gameState.turn = 'r';   
-    gameStep.textContent = "Your turn.";
+    statusText.textContent = "Your turn.";
 
     drawBoard(player);
     drawBoard(computer);
@@ -69,8 +70,8 @@ function start() {
 let player = new Player('r');
 let computer = new Player('c');
 
-const gameStep = document.querySelector("#game-step");
-gameStep.textContent = "Place your ships.";
+const statusText = document.querySelector("#status-text");
+statusText.textContent = "Place your ships.";
 
 const replayButton = document.querySelector("#end-modal > button");
 replayButton.addEventListener("click", setup);
